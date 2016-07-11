@@ -1,4 +1,4 @@
-package charlie.easy;
+package charlie.algorithms.easy;
 
 public class TreeNode {
 	int val;

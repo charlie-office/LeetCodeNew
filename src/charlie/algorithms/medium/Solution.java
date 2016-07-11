@@ -1,4 +1,4 @@
-package charlie.medium;
+package charlie.algorithms.medium;
 
 public class Solution {
 

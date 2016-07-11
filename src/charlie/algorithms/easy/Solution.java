@@ -6,7 +6,7 @@
  * [226. Invert Binary Tree]
  * 
  */
-package charlie.easy;
+package charlie.algorithms.easy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,15 +26,8 @@ public class Solution {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Solution s = new Solution();
-		int[] nums = {0,1,0,3,12};
-		for(int n : nums){
-			System.out.println(n);
-		}
-		s.moveZeroes(nums);
-		for(int n : nums){
-			System.out.println(n);
-		}
-		
+		int[] num = {7, 1, 5, 3, 6, 4};
+		System.out.println(s.maxProfit(num));		
 	}
 	
 	
@@ -308,6 +301,191 @@ public class Solution {
 			rs[i] = list.get(i);
 		}
 		return rs;
+		
+	}
+	
+	/**
+	 * [231. Power of Two]
+	 * Created On 2016年7月9日  下午8:51:26
+	 */
+	public boolean isPowerOfTwo(int n) {
+		if(n <= 0 || (n&(n-1)) != 0){
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * [206. Reverse Linked List]
+	 * Created On 2016年7月10日  下午4:00:26
+	 */
+	public ListNode reverseList(ListNode head) {
+		ListNode pre = null;
+		while(head != null){
+			ListNode temp = head.next;
+			head.next = pre;
+			pre = head;
+			head = temp;
+		}
+		return pre;
+	}
+	
+	/**
+	 * [191. Number of 1 Bits]
+	 * Created On 2016年7月10日  下午4:19:53
+	 */
+	public int hammingWeight(int n) {
+		int count = 0;
+		while(n != 0){
+			n = n & (n - 1);
+			count ++;
+		}
+		return count;
+	}
+	
+	/**
+	 * [235. Lowest Common Ancestor of a Binary Search Tree]
+	 * Created On 2016年7月10日  下午4:47:59
+	 */
+	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+		if(p.val < root.val && q.val < root.val){
+			root = lowestCommonAncestor(root.left,p,q);
+		}
+		if(p.val > root.val && q.val > root.val){
+			root = lowestCommonAncestor(root.right,p,q);
+		}
+		return root;
+	}
+	
+	/**
+	 * [263. Ugly Number]
+	 * Created On 2016年7月10日  下午5:14:04
+	 */
+	public boolean isUgly(int num) {
+		while(num > 1 && num % 2 == 0){
+			num = num / 2;
+		}
+		while(num > 1 && num % 3 == 0){
+			num = num / 3;
+		}
+		while(num > 1 && num % 5 == 0){
+			num = num / 5;
+		}
+		return num == 1 ;
+	}
+	
+	/**
+	 * [83. Remove Duplicates from Sorted List]
+	 * Created On 2016年7月10日  下午5:32:26
+	 */
+	public ListNode deleteDuplicates(ListNode head) {
+		if(head == null) return head;
+		ListNode pre = head;
+		ListNode cur = head.next;
+		while(cur != null){
+			if(cur.val != pre.val){
+				pre = cur;
+			}else{
+				pre.next = cur.next;
+			}
+			cur = cur.next;
+		}
+		return head;
+	}
+	
+	/**
+	 * [70. Climbing Stairs]
+	 * Created On 2016年7月10日  下午5:46:09
+	 */
+	public int climbStairs(int n) {
+		int t1 = 1;
+		int t2 = 2;
+		int t = 3;
+		int t3 = 0;
+		if(n == 1){
+			return t1;
+		}else if(n == 2){
+			return t2;
+		}else{
+			while(t < n){
+				t3 = t1 + t2;
+				t1 = t2;
+				t2 = t3;
+			}
+			return t3;
+		}
+	}
+	
+	/**
+	 * [121. Best Time to Buy and Sell Stock]
+	 * Created On 2016年7月10日  下午6:07:02
+	 */
+	public int maxProfit(int[] prices) {
+		int profit = 0;
+		int min = Integer.MAX_VALUE;
+		for (int i = 0; i < prices.length; i++) {
+			if (prices[i] < min) {
+				min = prices[i];
+			}
+			profit = (prices[i] - min > profit) ? prices[i] - min : profit;
+		}
+		return profit;
+	}
+	
+	/**
+	 * [141. Linked List Cycle]
+	 * Created On 2016年7月10日  下午6:53:51
+	 */
+	public boolean hasCycle(ListNode head) {
+		if(head == null || head.next == null){
+			return false;
+		}
+		ListNode slow = head;
+		ListNode fast = head.next.next;
+		while(fast != null){
+			if(slow == fast){
+				return true;
+			}else{
+				slow = slow.next;
+				if(fast.next == null){
+					return false;
+				}else{
+					fast = fast.next.next;
+				}
+				
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * [21. Merge Two Sorted Lists]
+	 * Created On 2016年7月10日  下午7:05:19
+	 */
+	public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+		ListNode head = new ListNode(0);
+		head.next = null;
+		ListNode temp = head;
+		while(l1 != null && l2 != null){
+			if(l1.val < l2.val){
+				temp.next = l1;
+				l1 = l1.next;
+			}else{
+				temp.next = l2;
+				l2 = l2.next;
+			}
+			temp = temp.next;
+		}
+		if(l1 != null) temp.next = l1;
+		if(l2 != null) temp.next = l2;
+		return head.next;
+	}
+	
+	/**
+	 * [345. Reverse Vowels of a String]
+	 * Created On 2016年7月10日  下午7:21:54
+	 */
+	public String reverseVowels(String s) {
 		
 	}
 }

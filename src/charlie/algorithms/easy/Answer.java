@@ -2,7 +2,7 @@
  * [344. Reverse String]
  * 
  */
-package charlie.easy;
+package charlie.algorithms.easy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -112,5 +112,72 @@ public class Answer {
         }
         return res;
 	}
-
+	
+	/**
+	 * [326. Power of Three]
+	 * Created On 2016年7月10日  下午3:51:41
+	 */
+	public boolean isPowerOfThree(int n) {
+		// 1162261467 is 3^19,  3^20 is bigger than int  
+		return ( n>0 && 1162261467 % n == 0);
+	}
+	
+	/**
+	 * [231. Power of Two]
+	 * Created On 2016年7月10日  下午3:59:29
+	 */
+	public boolean isPowerOfTwo(int n) {
+		return n > 0 && n == (n & -n);
+	}
+	
+	/**
+	 * [206. Reverse Linked List]
+	 * Created On 2016年7月10日  下午4:12:48
+	 */
+	public ListNode reverseList(ListNode head) {
+		if (head == null || head.next == null)
+			return head;
+		ListNode newHead = reverseList(head.next);
+		head.next.next = head;
+		head.next = null;
+		return newHead;
+	}
+	
+	/**
+	 * [235. Lowest Common Ancestor of a Binary Search Tree]
+	 * Created On 2016年7月10日  下午5:06:41
+	 */
+	public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+		if ((p.val - root.val) * (root.val - q.val) >= 0) 
+			return root;
+		return (p.val > root.val) ? lowestCommonAncestor(root.right, p, q) : lowestCommonAncestor(root.left, p, q);
+	}
+	
+	/**
+	 * [70. Climbing Stairs]
+	 * Created On 2016年7月10日  下午6:02:33
+	 */
+	public int climbStairs(int n) {
+		int[] dp = {0, 1, 2};
+		for(int i = 3; i <= n; i++) {
+			dp[i%3] = dp[(i-1)%3] + dp[(i-2)%3];
+		}
+		return dp[n%3];
+	}
+	
+	/**
+	 * [121. Best Time to Buy and Sell Stock]
+	 * Created On 2016年7月10日  下午6:07:02
+	 */
+	public int maxProfit(int[] prices) {
+		int profit = 0;
+		int min = Integer.MAX_VALUE;
+		for (int i = 0; i < prices.length; i++) {
+			min = Math.min(prices[i], min);
+			profit = Math.max(prices[i] - min, profit);
+		}
+		return profit;
+	}
+	
+	
 }

@@ -1,7 +1,7 @@
 /* Solved Problems
  * [. ]
  */
-package charlie.hard;
+package charlie.algorithms.hard;
 
 /**
  * 
