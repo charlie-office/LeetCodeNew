@@ -10,9 +10,14 @@ package charlie.algorithms.easy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * 
@@ -26,8 +31,8 @@ public class Solution {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Solution s = new Solution();
-		int[] num = {7, 1, 5, 3, 6, 4};
-		System.out.println(s.maxProfit(num));		
+		int[] num = {1,1,1};
+		System.out.println(s.rob(num));		
 	}
 	
 	
@@ -486,7 +491,176 @@ public class Solution {
 	 * Created On 2016年7月10日  下午7:21:54
 	 */
 	public String reverseVowels(String s) {
-		
+		if(s == null || s.length() == 0) return s;
+		int len = s.length();
+		int index = len - 1;
+		StringBuilder sb = new StringBuilder();
+		for(int i = 0; i < len; i++){
+			char ch = s.charAt(i);
+			if(ch == 'a' || ch == 'e' || ch == 'i' || ch == 'o' || ch == 'u' 
+					|| ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U'){
+				
+				for(int j = index; j >= 0 ; j --){
+					char rch = s.charAt(j);
+					if(rch == 'a' || rch == 'e' || rch == 'i' || rch == 'o' || rch == 'u' 
+							|| rch == 'A' || rch == 'E' || rch == 'I' || rch == 'O' || rch == 'U'){
+						sb.append(rch);
+						j --;
+						index = j;
+						break;
+					}
+				}
+			}else{
+				sb.append(ch);
+			}
+		}
+		return sb.toString();
 	}
+	
+	/**
+	 * [24. Swap Nodes in Pairs]
+	 * Created On 2016年7月11日  下午8:05:05
+	 */
+	public ListNode swapPairs(ListNode head) {
+		if(head == null){
+			return head;
+		}
+		ListNode dummy = new ListNode(0);
+		dummy.next = head;
+		head = dummy;
+		ListNode pre = head.next;
+		ListNode cur = null;
+		while(pre != null && pre.next != null){
+			cur = pre.next;
+			head.next = cur;
+			pre.next = cur.next;
+			cur.next = pre;
+			head = pre;
+			pre = pre.next;
+		}
+		return dummy.next;
+	}
+	
+	/**
+	 * [198. House Robber]
+	 * Created On 2016年7月11日  下午8:38:35
+	 */
+	public int rob(int[] nums) {
+		int rob = 0; //max monney can get if rob current house
+		int notrob = 0; //max money can get if not rob current house
+		for(int i=0; i<nums.length; i++) {
+			int currob = notrob + nums[i]; //if rob current value, previous house must not be robbed
+			notrob = Math.max(notrob, rob); //if not rob ith house, take the max value of robbed (i-1)th house and not rob (i-1)th house
+			rob = currob;
+		}
+		return Math.max(rob, notrob);
+	}
+	
+	
+	/**
+	 * [342. Power of Four]
+	 * Created On 2016年7月12日  下午8:40:33
+	 */
+	public boolean isPowerOfFour(int num) {
+		if(num <= 0 ||(num & (num - 1)) != 0){
+			return false;
+		}else{
+			int count = 0;
+			while(num != 1){
+				count++;
+				num = num >> 1;
+			}
+			if(count % 2 == 0){
+				return true;
+			}else{
+				return false;
+			}
+		}
+	}
+	
+	/**
+	 * [27. Remove Element]
+	 * Created On 2016年7月12日  下午9:29:51
+	 */
+	public int removeElement(int[] nums, int val) {
+		int index = 0;
+		for(int i = 0; i < nums.length; i++){
+			if(nums[i] != val){
+				nums[index] = nums[i];
+				index ++;
+			}
+		}
+		return index;
+	}
+	
+	
+	/**
+	 * [66. Plus One]
+	 * Created On 2016年7月12日  下午9:37:41
+	 */
+	public int[] plusOne(int[] digits) {
+		List<Integer> list = new ArrayList<>();
+		int bit = 1;
+		for(int i = digits.length - 1; i >=0 ; i --){
+			if(digits[i] + bit > 9){
+				list.add(digits[i] + bit - 10);
+				bit = 1;
+			}else{
+				list.add(digits[i] + bit);
+				bit = 0;
+			}
+		}
+		if(bit == 1) list.add(bit);
+		int[] nums = new int[list.size()];
+		for(int i = 0; i < list.size(); i++){
+			nums[i] = list.get(list.size() - i - 1);
+		}
+		return nums;
+	}
+	
+	/**
+	 * [101. Symmetric Tree]
+	 * Created On 2016年7月13日  下午9:21:30
+	 */
+	public boolean isSymmetric(TreeNode root) {
+		if(root == null) return true;
+		return isMirror101(root.left, root.right);
+	}
+	
+	public boolean isMirror101(TreeNode p,TreeNode q){
+		if(p == null && q == null) return true;
+		if(p != null && q != null){
+			return p.val == q.val && isMirror101(p.left,q.right) && isMirror101(p.right, q.left);
+		}
+		return false;
+	}
+	
+	/**
+	 * [110. Balanced Binary Tree]
+	 * Created On 2016年7月13日  下午9:42:01
+	 */
+	public boolean isBalanced(TreeNode root) {
+		if(root == null) {
+			return true;
+		}else{
+			if (Math.abs(height110(root.left) - height110(root.right)) <= 1){
+				return false;
+			}else{
+				return isBalanced(root.left) && isBalanced(root.right);
+			}
+		}
+	}
+	
+	public int height110(TreeNode root){
+		if(root == null) {
+			return 0;
+		}
+		else{
+			int lh = height110(root.left);
+			int rh = height110(root.right);
+			return lh > rh ? lh + 1: rh + 1;
+		}
+	}
+	
 }
 
