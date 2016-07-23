@@ -6,8 +6,11 @@ package charlie.algorithms.easy;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 
 /**
  * 
@@ -281,5 +284,230 @@ public class Answer {
 			q.add(t2.left);
 		}
 		return true;
+	}
+	
+	/**
+	 * [110. Balanced Binary Tree]
+	 * Created On 2016年7月13日  下午9:42:01
+	 */
+	//The point to solve it by using recursive is to use integer value as 
+	//both height counter and a flag to mark unbalance. I'm feeling it's a middle level problem to solve.
+	public boolean isBalanced(TreeNode root) {
+		return root == null || height(root) != -1;
+	}
+	public int height(TreeNode root){
+		if(root.left == null && root.right == null)
+			return 1;
+		int lH = 0, rH = 0;
+		if(root.left != null) lH = height(root.left);
+		if(root.right != null) rH = height(root.right);
+		if(lH == -1 || rH == -1) return -1;
+		if(Math.abs(lH - rH) > 1) return -1;
+		return Math.max(lH, rH) + 1;
+	}
+	
+	/**
+	 * [119. Pascal's Triangle II]
+	 * Created On 2016年7月14日  下午2:50:16
+	 */
+	public List<Integer> getRow(int rowIndex) {
+		List<Integer> res = new ArrayList<>();
+		int curr[] = new int[rowIndex + 1];
+		int prev[] = new int[rowIndex + 1];
+		prev[0] = 1;
+		
+		for(int row = 1; row <= rowIndex; row++) {
+			curr[0] = 1;
+			curr[row] = 1;
+			
+			for(int i = 1; i < row; i++)
+				curr[i] = prev[i] + prev[i - 1];
+			
+			int[] swap = curr;
+			curr = prev;
+			prev = swap;
+		} 
+		
+		for(int i = 0; i <= rowIndex; i++)
+			res.add(prev[i]);
+			
+		return res;
+	}
+	
+	/**
+	 * [9. Palindrome Number]
+	 * Created On 2016年7月17日  下午6:00:54
+	 */
+	public boolean isPalindrome(int x) {
+		if (x<0 || (x!=0 && x%10==0)) return false;
+		int rev = 0;
+		while (x>rev){
+			rev = rev*10 + x%10;
+			x = x/10;
+		}
+		return (x==rev || x==rev/10);
+	}
+	
+	/**
+	 * [111. Minimum Depth of Binary Tree]
+	 * Created On 2016年7月18日  下午9:11:29
+	 */
+	public int minDepth(TreeNode root) {
+		if(root == null) return 0;
+		if(root.left == null) return 1 + minDepth(root.right);
+		if(root.right == null) return 1 + minDepth(root.left);
+		return 1 + Math.min(minDepth(root.left),minDepth(root.right));
+	}
+	
+	/**
+	 * [205. Isomorphic Strings]
+	 * Created On 2016年7月19日  下午3:48:21
+	 */
+	public boolean isIsomorphic(String sString, String tString) {
+
+		char[] s = sString.toCharArray();
+		char[] t = tString.toCharArray();
+
+		int length = s.length;
+		if(length != t.length) return false;
+
+		char[] sm = new char[256];
+		char[] tm = new char[256];
+
+		for(int i=0; i<length; i++){
+			char sc = s[i];
+			char tc = t[i];
+			if(sm[sc] == 0 && tm[tc] == 0){
+				sm[sc] = tc;
+				tm[tc] = sc;
+			}else{
+				if(sm[sc] != tc || tm[tc] != sc){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * [219. Contains Duplicate II]
+	 * Created On 2016年7月19日  下午4:31:29
+	 */
+	public boolean containsNearbyDuplicate(int[] nums, int k) {
+		Set<Integer> set = new HashSet<Integer>();
+		for(int i = 0; i < nums.length; i++){
+			if(i > k) set.remove(nums[i-k-1]);
+			if(!set.add(nums[i])) return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * [168. Excel Sheet Column Title]
+	 * Created On 2016年7月20日  下午9:14:18
+	 */
+	public String convertToTitle(int n) {
+		StringBuilder result = new StringBuilder();
+
+		while(n>0){
+			n--;
+			result.insert(0, (char)('A' + n % 26));
+			n /= 26;
+		}
+
+		return result.toString();
+	}
+	
+	/**
+	 * [165. Compare Version Numbers]
+	 * Created On 2016年7月21日  上午10:10:23
+	 */
+	public int compareVersion(String version1, String version2) {
+		int temp1 = 0,temp2 = 0;
+		int len1 = version1.length(),len2 = version2.length();
+		int i = 0,j = 0;
+		while(i<len1 || j<len2) {
+			temp1 = 0;
+			temp2 = 0;
+			while(i<len1 && version1.charAt(i) != '.') {
+				temp1 = temp1*10 + version1.charAt(i++)-'0';
+				
+			}
+			while(j<len2 && version2.charAt(j) != '.') {
+				temp2 = temp2*10 + version2.charAt(j++)-'0';
+				
+			}
+			if(temp1>temp2) return 1;
+			else if(temp1<temp2) return -1;
+			else {
+				i++;
+				j++;
+				
+			}
+			
+		}
+		return 0;
+		
+	}
+	
+	/**
+	 * [88. Merge Sorted Array]
+	 * Created On 2016年7月22日  下午3:39:11
+	 */
+	public void merge(int A[], int m, int B[], int n) {
+		int length = m+n;
+		while(n > 0) 
+			A[--length] = (m == 0 || A[m-1] < B[n-1]) ? B[--n] : A[--m];
+	}
+	/**
+	 * [257. Binary Tree Paths]
+	 * Created On 2016年7月22日  下午4:27:03
+	 */
+	
+	public List<String> binaryTreePaths(TreeNode root) {
+		List<String> rst = new ArrayList<String>();
+		if(root == null) return rst;
+		StringBuilder sb = new StringBuilder();
+		helper(rst, sb, root);
+		return rst;
+	}
+	
+	public void helper(List<String> rst, StringBuilder sb, TreeNode root){
+		if(root == null) return;
+		int tmp = sb.length();
+		if(root.left == null && root.right == null){
+			sb.append(root.val);
+			rst.add(sb.toString());
+			sb.delete(tmp , sb.length());
+			return;
+		}
+		sb.append(root.val + "->");
+		helper(rst, sb, root.left);
+		helper(rst, sb, root.right);
+		sb.delete(tmp , sb.length());
+		return;
+	}
+	
+	/**
+	 * [19. Remove Nth Node From End of List]
+	 * Created On 2016年7月22日  下午5:34:12
+	 */
+	public ListNode removeNthFromEnd(ListNode head, int n) {
+		ListNode start = new ListNode(0);
+		ListNode slow = start, fast = start;
+		slow.next = head;
+		
+		//Move fast in front so that the gap between slow and fast becomes n
+		for(int i=1; i<=n+1; i++)   {
+			fast = fast.next;
+		}
+		//Move fast to the end, maintaining the gap
+		while(fast != null) {
+			slow = slow.next;
+			fast = fast.next;
+		}
+		//Skip the desired node
+		slow.next = slow.next.next;
+		return start.next;
 	}
 }

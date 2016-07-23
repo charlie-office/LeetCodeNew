@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeMap;
@@ -31,8 +32,13 @@ public class Solution {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Solution s = new Solution();
-		int[] num = {1,1,1};
-		System.out.println(s.rob(num));		
+		int[] nums1 = {1,0,0,0};
+		int[] nums2 = {3,5,6};
+		s.merge(nums1, 1, nums2, 3);
+		for(int num : nums1){
+			System.out.println(num);
+		}
+		
 	}
 	
 	
@@ -643,7 +649,7 @@ public class Solution {
 		if(root == null) {
 			return true;
 		}else{
-			if (Math.abs(height110(root.left) - height110(root.right)) <= 1){
+			if (Math.abs(height110(root.left) - height110(root.right)) > 1){
 				return false;
 			}else{
 				return isBalanced(root.left) && isBalanced(root.right);
@@ -662,5 +668,486 @@ public class Solution {
 		}
 	}
 	
+	
+	/**
+	 * [118. Pascal's Triangle]
+	 * Created On 2016年7月14日  下午2:37:35
+	 */
+	public List<List<Integer>> generate(int numRows) {
+		List<List<Integer>> list = new ArrayList<>();
+		for(int i = 0; i < numRows; i++){
+			List<Integer> temp = new ArrayList<>();
+			if(i == 0){
+				temp.add(1);
+			}else{
+				List<Integer> pre = (List<Integer>)list.get(i - 1);
+				temp.add(1);
+				for(int j = 1; j < pre.size(); j++){
+					temp.add(pre.get(j) + pre.get(j - 1));
+				}
+				temp.add(1);
+			}
+			list.add(temp);
+		}
+		return list;
+	}
+	
+	/**
+	 * [119. Pascal's Triangle II]
+	 * Created On 2016年7月14日  下午2:50:16
+	 */
+	public List<Integer> getRow(int rowIndex) {
+		List<Integer> list = new ArrayList<>();
+		for(int i = 0; i <= rowIndex; i++){
+			
+			if(i == 0){
+				list.add(1);
+			}else{
+				for(int j = list.size() - 1; j >= 1; j--){
+					list.set(j, list.get(j) + list.get(j - 1));
+				}
+				list.add(1);
+			}
+		}
+		return list;
+	}
+	
+	/**
+	 * [172. Factorial Trailing Zeroes]
+	 * Created On 2016年7月14日  下午3:44:48
+	 */
+	public int trailingZeroes(int n) {
+		int count = 0;
+		while(n >= 5){
+			n /= 5;
+			count += n;
+		}
+		return count;
+	}
+	
+	/**
+	 * [374. Guess Number Higher or Lower]
+	 * Created On 2016年7月14日  下午3:45:27
+	 */
+	public int guessNumber(int n) {
+		int left = 1;
+		int right = n;
+		
+		while(left <= right){
+			int mid = left + (right - left)/2;
+			if(guess(mid) == 0){
+				return mid;
+			}else if(guess(mid) == -1){
+				right = mid - 1;
+			}else{
+				left = mid + 1;
+			}
+		}
+		return left;
+	}
+	
+	public int guess(int num){
+		return -1;
+	}
+	
+	/**
+	 * [112. Path Sum]
+	 * Created On 2016年7月17日  下午5:18:16
+	 */
+	public boolean hasPathSum(TreeNode root, int sum) {
+		if(root == null){
+			return false;
+		}
+		if(root.val == sum && root.left == null && root.right == null){
+			return true;
+		}else{
+			return hasPathSum(root.left, sum - root.val) || hasPathSum(root.right, sum - root.val);
+		}
+	}
+	
+	/**
+	 * [9. Palindrome Number]
+	 * Created On 2016年7月17日  下午5:47:10
+	 */
+	public boolean isPalindrome(int x) {
+		if(x < 0) 
+			return false;
+		else if( x < 10) 
+			return true;
+		else{
+			int num = 0;
+			int tmp = x;
+			while(tmp >= 10){
+				num = num * 10 + tmp % 10;
+				tmp = tmp / 10;
+			}
+			num = num * 10 + tmp;
+			if(num == x) return true;
+			else return false;
+		}
+	}
+	
+	/**
+	 * [36. Valid Sudoku]
+	 * Created On 2016年7月17日  下午6:07:24
+	 */
+	public boolean isValidSudoku(char[][] board) {
+		int[] count = new int[9];
+		for(int i = 0; i < 9; i ++){
+			Arrays.fill(count, 0);
+			for(int j = 0; j < 9; j ++){
+				if(board[i][j] <= '9' && board[i][j] >= '1'){
+					if(count[board[i][j] - '1'] == 1){
+						return false;
+					}else{
+						count[board[i][j] - '1'] = 1;
+					}
+				}
+			}
+		}
+		
+		for(int i = 0; i < 9; i ++){
+			Arrays.fill(count, 0);
+			for(int j = 0; j < 9; j ++){
+				if(board[j][i] <= '9' && board[j][i] >= '1'){
+					if(count[board[j][i] - '1'] == 1){
+						return false;
+					}else{
+						count[board[j][i] - '1'] = 1;
+					}
+				}
+			}
+		}
+		
+		for(int i = 0; i < 9; i ++){
+			Arrays.fill(count, 0);
+			for(int j = 0; j < 9; j ++){
+				int row = (i/3) * 3 + j/3;
+				int col = (i%3) * 3 + j%3;
+				if(board[row][col] <= '9' && board[row][col] >= '1'){
+					if(count[board[row][col] - '1'] == 1){
+						return false;
+					}else{
+						count[board[row][col] - '1'] = 1;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * [111. Minimum Depth of Binary Tree]
+	 * Created On 2016年7月18日  下午9:11:29
+	 */
+	public int minDepth(TreeNode root) {
+		if(root == null){
+			return 0;
+		}else{
+			return minDepth111(root);
+		}
+	}
+	
+	public int minDepth111(TreeNode root){
+		if(root.left == null && root.right == null){
+			return  1;
+		}else if(root.left == null){
+			return minDepth(root.right) + 1;
+		}else if(root.right == null){
+			return minDepth(root.left) + 1;
+		}else{
+			int lh = minDepth(root.left);
+			int rh = minDepth(root.right);
+			return lh < rh ? lh + 1 : rh + 1;
+		}
+	}
+	
+	/**
+	 * [299. Bulls and Cows]
+	 * Created On 2016年7月18日  下午9:43:46
+	 */
+	public String getHint(String secret, String guess) {
+		int[] snum = new int[10];
+		int[] gnum = new int[10];
+		int bull = 0;
+		int cow = 0;
+		char[] s = secret.toCharArray();
+		char[] g = guess.toCharArray();
+		for(int i = 0; i < s.length; i ++){
+			if(s[i] == g[i]){
+				bull ++;
+			}else{
+				snum[s[i] - '0'] ++;
+				gnum[g[i] - '0'] ++;
+			}
+		}
+		
+		for(int i = 0; i < 10; i++){
+			int min = snum[i] < gnum[i] ? snum[i] : gnum[i];
+			cow += min;
+		}
+		
+		return bull + "A" + cow + "B";
+	}
+	
+	
+	/**
+	 * [205. Isomorphic Strings]
+	 * Created On 2016年7月19日  下午3:48:21
+	 */
+	public boolean isIsomorphic(String s, String t) {
+		Map<Character,Character> map = new HashMap<>();
+		char[] sch = s.toCharArray();
+		char[] tch = t.toCharArray();
+		for(int i = 0; i < sch.length; i ++){
+			if(!map.containsKey(sch[i]) && !map.containsValue(tch[i])){
+				map.put(sch[i], tch[i]);
+			}else if(map.containsKey(sch[i]) && map.containsValue(tch[i]) && map.get(sch[i]) == tch[i]){
+				
+			}else{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * [219. Contains Duplicate II]
+	 * Created On 2016年7月19日  下午4:31:29
+	 */
+	public boolean containsNearbyDuplicate(int[] nums, int k) {
+		Map<Integer, Integer> map = new HashMap<>();
+		for(int i = 0; i < nums.length; i++){
+			if(!map.containsKey(nums[i])){
+				map.put(nums[i], i);
+			} else {
+				if(i - map.get(nums[i]) <= k){
+					return true;
+				}else{
+					map.put(nums[i], i);
+				}
+			}
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * [223. Rectangle Area]
+	 * Created On 2016年7月19日  下午4:54:18
+	 */
+	public int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+		int lx = Math.max(A, E);
+		int ly = Math.max(B, F);
+		int rx = Math.min(C, G);
+		int ry = Math.min(D, H);
+		
+		int area1 = (C - A) * (D - B);
+		int area2 = (H - F) * (G - E);
+		int area3 = (rx - lx) * (ry - ly);
+		if(lx >= rx || ly >= ry){
+			area3 = 0;
+		}
+		return area1 + area2 - area3;
+	}
+	
+	/**
+	 * [168. Excel Sheet Column Title]
+	 * Created On 2016年7月20日  下午8:48:27
+	 */
+	public String convertToTitle(int n) {
+		StringBuilder sb = new StringBuilder();
+		while(n != 0){
+			sb.append((char)('A' + (n - 1)%26));
+			n = (n - 1)/26;
+		}
+		return sb.reverse().toString();
+	}
+	
+	/**
+	 * [125. Valid Palindrome]
+	 * Created On 2016年7月20日  下午9:18:38
+	 */
+	public boolean isPalindrome(String s) {
+		if(s == null || s.length() <= 1) return true;
+		char[] ch = s.toLowerCase().toCharArray();
+		int left = 0;
+		int right = ch.length - 1;
+		while(left < right){
+			while(left < right && !isAlphanumeric125(ch[left])){
+				left ++;
+			}
+			while(right > left && !isAlphanumeric125(ch[right])){
+				right --;
+			}
+			if(ch[left] != ch[right]){
+				return false;
+			}else{
+				left ++;
+				right --;
+			}
+		}
+		return true;
+	}
+	public boolean isAlphanumeric125(char ch){
+		if((ch >= 'a' && ch <= 'z') || (ch >= '0' && ch <= '9')){
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * [165. Compare Version Numbers]
+	 * Created On 2016年7月20日  下午9:43:30
+	 */
+	public int compareVersion(String version1, String version2) {
+		String[] vers1 = (version1).split("\\.");
+		String[] vers2 = (version2).split("\\.");
+		
+		int index = 0;
+		while(index < vers1.length && index < vers2.length){
+			int v1 = Integer.valueOf(vers1[index]);
+			int v2 = Integer.valueOf(vers2[index]);
+			if(v1 < v2){
+				return -1;
+			}else if(v1 > v2){
+				return 1;
+			}
+			index ++;
+		}
+		while(index < vers1.length){
+			int v1 = Integer.valueOf(vers1[index]);
+			if(v1 > 0){
+				return 1;
+			}
+			index ++;
+		}
+		while(index < vers2.length){
+			int v2 = Integer.valueOf(vers2[index]);
+			if(v2 > 0){
+				return -1;
+			}
+			index ++;
+		}
+		return 0;
+	}
+	
+	
+	/**
+	 * [278. First Bad Version]
+	 * Created On 2016年7月21日  上午10:17:10
+	 */
+	public int firstBadVersion(int n) {
+	    int start = 1, end = n;
+	    while (start < end) {
+	        int mid = start + (end-start) / 2;
+	        if (!isBadVersion(mid)) start = mid + 1;
+	        else end = mid;            
+	    }        
+	    return start;
+	}
+	
+	public boolean isBadVersion(int version){
+		return false;
+	}
+	
+	/**
+	 * [160. Intersection of Two Linked Lists]
+	 * Created On 2016年7月22日  下午3:25:08
+	 */
+	public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+		if(headA == null || headB == null) return null;
+		ListNode a = headA;
+		ListNode b = headB;
+		while(a != b){
+			a = a == null ? headB : a.next;
+			b = b == null ? headA : b.next;
+		}
+		
+		return a;
+	}
+	
+	
+	/**
+	 * [88. Merge Sorted Array]
+	 * Created On 2016年7月22日  下午3:39:11
+	 */
+	public void merge(int[] nums1, int m, int[] nums2, int n) {
+		int index = 0;
+		for(int i = 0; i < n; i++){
+			for(; index < i + m; index++){
+				if(nums2[i] < nums1[index]){
+					break;
+				}
+			}
+			
+			for(int k = i + m; k > index; k--){
+				nums1[k] = nums1[k - 1];
+			}
+			nums1[index] = nums2[i];
+			index ++;
+		}
+	}
+	
+	/**
+	 * [257. Binary Tree Paths]
+	 * Created On 2016年7月22日  下午4:27:03
+	 */
+	public List<String> binaryTreePaths(TreeNode root) {
+		List<String> list = new ArrayList<>();
+		if(root != null) binaryTreePaths257(root,"",list);
+		return list;
+	}
+	
+	public void binaryTreePaths257(TreeNode root, String prefix, List<String> list){
+		if(root.left == null && root.right == null) list.add(prefix + root.val);
+		if(root.left != null) binaryTreePaths257(root.left, prefix + root.val + "->", list);
+		if(root.right != null) binaryTreePaths257(root.right, prefix  + root.val + "->", list);
+	}
+	
+	/**
+	 * [290. Word Pattern]
+	 * Created On 2016年7月22日  下午5:01:57
+	 */
+	public boolean wordPattern(String pattern, String str) {
+		String[] s = str.split(" ");
+		char[] ch = pattern.toCharArray();
+		if(s.length != ch.length) return false;
+		Map<Character, String> mapCh = new HashMap<>();
+		Map<String, Character> mapS = new HashMap<>();
+		for(int i = 0; i < s.length; i++){
+			if(!mapCh.containsKey(ch[i]) && !mapS.containsKey(s[i])){
+				mapCh.put(ch[i], s[i]);
+				mapS.put(s[i], ch[i]);
+			}else {
+				if(mapCh.containsKey(ch[i]) ^ mapS.containsKey(s[i]))
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * [19. Remove Nth Node From End of List]
+	 * Created On 2016年7月22日  下午5:34:12
+	 */
+	public ListNode removeNthFromEnd(ListNode head, int n) {
+		if(head != null) {
+			if(removeNthFromEnd19(head, n) == n) head = head.next;
+		}
+		return head;
+	}
+	
+	public int removeNthFromEnd19(ListNode node,int n){
+		if(node.next == null){
+			return 1;
+		}else{
+			int num = removeNthFromEnd19(node.next, n);
+			if(num == n){
+				node.next = node.next.next;
+			}
+			return ++num;
+		}
+	}
 }
 
