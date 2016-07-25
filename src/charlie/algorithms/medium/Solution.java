@@ -1,5 +1,10 @@
 package charlie.algorithms.medium;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author charlie
  * @since 2016年6月26日
@@ -188,5 +193,74 @@ public class Solution {
 			return f[10];
 		}
 	}
+	
+	/**
+	 * [347. Top K Frequent Elements]
+	 * using Bucket Sort
+	 * Created On 2016年7月25日  下午4:17:06
+	 */
+	public List<Integer> topKFrequent(int[] nums, int k) {
+		Map<Integer, Integer> frequencyMap = new HashMap<>();
+		int maxFrequency = 0;
 
+		for (int n : nums) {
+			int frequency = frequencyMap.getOrDefault(n, 0) + 1;
+			frequencyMap.put(n, frequency);
+			maxFrequency = maxFrequency < frequency ? frequency : maxFrequency;
+		}
+
+		// here i is the frequency and bucket.get(i) is the numbers that having this frequency
+		List<List<Integer>> bucket = new ArrayList<>(maxFrequency);
+		while (maxFrequency-- >= 0) {
+			bucket.add(new ArrayList<>());
+		}
+
+		for (Map.Entry<Integer, Integer> entry : frequencyMap.entrySet()) {
+			int frequency = entry.getValue();
+			bucket.get(frequency).add(entry.getKey());
+		}
+
+		List<Integer> res = new ArrayList<>();
+		for (int pos = bucket.size() - 1; pos >= 0 && res.size() < k; pos--) {
+			res.addAll(bucket.get(pos));
+		}
+		return res;
+	}
+	
+	/**
+	 * [343. Integer Break]
+	 * Created On 2016年7月25日  下午5:20:24
+	 */
+	public int integerBreak(int n) {
+		int result = 1;
+		if(n == 2) return 1;
+		if(n == 3) return 2;
+		while(n >= 2){
+			int num = 3;
+			if(n == 4 || n == 2) num = n;
+			result *= num;
+			n -= num;
+		}
+		return result;
+	}
+	
+	/**
+	 * [268. Missing Number]
+	 * Created On 2016年7月25日  下午6:11:56
+	 */
+	public int missingNumber(int[] nums) {
+		int num = nums.length;
+		for(int i = 0; i < nums.length; i++){
+			num ^= i ^ nums[i];
+		}
+		return num;
+	}
+	
+	/**
+	 * [319. Bulb Switcher]
+	 * Created On 2016年7月25日  下午6:28:18
+	 */
+	public int bulbSwitch(int n) {
+		return (int)Math.sqrt(n);
+	}
 }
