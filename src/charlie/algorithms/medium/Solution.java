@@ -1,9 +1,12 @@
 package charlie.algorithms.medium;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Stack;
 
 /**
  * @author charlie
@@ -20,44 +23,11 @@ public class Solution {
 		// TODO Auto-generated method stub
 		Solution s = new Solution();
 		int[] bits = s.countBits(5);
-		s.printArray(bits);
+		String[] ss = {"ajkgna", "akgja"};
+		String str = Arrays.toString(ss);
+		System.out.println(str);
 	}
 	
-	/**
-	 * 用于测试，打印int类型数组
-	 * Created On 2016年7月24日  下午5:54:16
-	 */
-	public void printArray(int[] arr){
-		System.out.print("[ ");
-		for(int num : arr){
-			System.out.print(num + " ");
-		}
-		System.out.println("]");
-	}
-	
-	/**
-	 * 用于测试，打印char类型数组
-	 * Created On 2016年7月24日  下午5:54:16
-	 */
-	public void printArray(char[] arr){
-		System.out.print("[ ");
-		for(char ch : arr){
-			System.out.print(ch + " ");
-		}
-		System.out.println("]");
-	}
-	
-	/**
-	 * 用于测试，打印String类型数组
-	 * Created On 2016年7月24日  下午5:54:16
-	 */
-	public void printArray(String[] arr){
-		System.out.println("String Array = [ ");
-		for(String str : arr){
-			System.out.println(str);
-		}
-		System.out.println("]");
-	}
 	
 	/**
 	 * [338. Counting Bits]
@@ -263,4 +233,202 @@ public class Solution {
 	public int bulbSwitch(int n) {
 		return (int)Math.sqrt(n);
 	}
+	
+	/**
+	 * [144. Binary Tree Preorder Traversal]
+	 * Created On 2016年7月26日  下午2:17:27
+	 */
+	public List<Integer> preorderTraversal(TreeNode root) {
+		List<Integer> list = new ArrayList<>();
+		preorder114(list, root);
+		return list;
+	}
+	
+	public void preorder114(List<Integer> list, TreeNode root){
+		if(root != null){
+			list.add(root.val);
+			preorder114(list, root.left);
+			preorder114(list, root.right);
+		}
+	}
+	
+	/**
+	 * [94. Binary Tree Inorder Traversal]
+	 * Created On 2016年7月26日  下午2:40:31
+	 */
+	//Recursive
+	public List<Integer> inorderTraversal1(TreeNode root) {
+		List<Integer> list = new ArrayList<>();
+		inorder94(list, root);
+		return list;
+	}
+	
+	public void inorder94(List<Integer> list, TreeNode root){
+		if(root != null){
+			inorder94(list, root.left);
+			list.add(root.val);
+			inorder94(list, root.right);
+		}
+	}
+	
+	//Iterative
+	public List<Integer> inorderTraversal2(TreeNode root) {
+		List<Integer> list = new ArrayList<>();
+		
+		Stack<TreeNode> stack = new Stack<>();
+		TreeNode cur = root;
+		while(cur != null || !stack.isEmpty()){
+			while(cur != null){
+				stack.push(cur);
+				cur = cur.left;
+			}
+			cur = stack.pop();
+			list.add(cur.val);
+			cur = cur.right;
+		}
+		return list;
+	}
+	
+	/**
+	 * [145. Binary Tree Postorder Traversal]
+	 * Created On 2016年7月26日  下午3:10:56
+	 */
+	//Recursive
+	public List<Integer> postorderTraversal1(TreeNode root) {
+		List<Integer> list = new ArrayList<>();
+		postorder145(list, root);
+		return list;
+	}
+	
+	public void postorder145(List<Integer> list, TreeNode root){
+		if(root != null){
+			postorder145(list, root.left);
+			postorder145(list, root.right);
+			list.add(root.val);
+		}
+	}
+	
+	//Iterative
+	public List<Integer> postorderTraversal2(TreeNode root) {
+		LinkedList<Integer> list = new LinkedList<>();
+		
+		Stack<TreeNode> stack = new Stack<>();
+		TreeNode cur = root;
+		while(cur != null || !stack.isEmpty()){
+			while(cur != null){
+				stack.push(cur);
+				list.addFirst(cur.val);
+				cur = cur.right;
+			}
+			cur = stack.pop();
+			cur = cur.left;
+		}
+		return list;
+	}
+	
+	/**
+	 * [318. Maximum Product of Word Lengths]
+	 * Created On 2016年7月26日  下午3:43:53
+	 */
+	public int maxProduct(String[] words) {
+		if(words == null || words.length == 0) return 0;
+		int[] mask = new int[words.length];
+		int[] len = new int[words.length];
+		int max = 0;
+		for(int i = 0; i < words.length; i++){
+			len[i] = words[i].length();
+			for(int j = 0; j < len[i]; j++){
+				mask[i] |= 1 << (words[i].charAt(j) - 'a');
+			}
+			
+			for(int j = 0; j < i; j++){
+				if((mask[i] & mask[j]) == 0){
+					int product = len[i] * len[j];
+					max = max > product ? max : product;
+				}
+			}
+		}
+		return max;
+	}
+	
+	/**
+	 * [328. Odd Even Linked List]
+	 * Created On 2016年7月26日  下午4:42:39
+	 */
+	public ListNode oddEvenList(ListNode head) {
+		if(head == null) return head;
+		ListNode oddhead = new ListNode(0);
+		ListNode evenhead = new ListNode(0);
+		ListNode odd = oddhead;
+		ListNode even = evenhead;
+		boolean flag = true;
+		while(head != null){
+			if(flag){
+				odd.next = head;
+				head = head.next;
+				odd = odd.next;
+				odd.next = null;
+				flag = false;
+			}else{
+				even.next = head;
+				head = head.next;
+				even = even.next;
+				even.next = null;
+				flag = true;
+			}
+		}
+		odd.next = evenhead.next;
+		return oddhead.next;
+	}
+	
+	
+	
+	/**
+	 * [230. Kth Smallest Element in a BST]
+	 * Created On 2016年7月26日  下午5:23:43
+	 */
+	//DFS in-order Recursive
+	private static int number = 0;
+	private static int count = 0;
+	public int kthSmallest(TreeNode root, int k) {
+		count = k;
+		kthSmallest230(root);
+		return number;
+	}
+	
+	public void kthSmallest230(TreeNode root) {
+		if (root.left != null) kthSmallest230(root.left);
+		count--;
+		if (count == 0) {
+			number = root.val;
+			return;
+		}
+		if (root.right != null) kthSmallest230(root.right);
+	}
+	
+	/**
+	 * [377. Combination Sum IV]
+	 * Created On 2016年7月26日  下午5:35:18
+	 */
+	public int combinationSum4(int[] nums, int target) {
+		Arrays.sort(nums);
+		int[] dp = new int[target + 1];
+		dp[0] = 1;
+		for(int i = 1; i <= target; i++){
+			for(int j = 0; j < nums.length && nums[j] <= i; j++){
+				dp[i] += dp[i - nums[j]];
+			}
+		}
+		return dp[target];
+	}
+	
+	/**
+	 * [216. Combination Sum III]
+	 * Created On 2016年7月26日  下午6:05:51
+	 */
+	public List<List<Integer>> combinationSum3(int k, int n) {
+		List<List<Integer>> list = new ArrayList<>();
+		return list;
+	}
+
 }

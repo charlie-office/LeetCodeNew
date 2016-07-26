@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 /**
  * 
@@ -189,6 +190,146 @@ public class Answer {
 		product*=n;
 		
 		return product;
+	}
+	
+	
+	/**
+	 * [144. Binary Tree Preorder Traversal]
+	 * Created On 2016年7月26日  下午2:17:27
+	 */
+	//Morris
+	public List<Integer> preorderTraversal1(TreeNode root) {
+		List<Integer> l=new ArrayList<Integer>();
+		if(root==null) return l;
+		TreeNode pre,cur=root;
+		while(cur!=null){
+			if(cur.left==null){
+				l.add(cur.val);
+				cur=cur.right;
+			}else{
+				pre=cur.left;
+				while(pre.right!=null&&pre.right!=cur){
+					pre=pre.right;
+				}
+				if(pre.right==null){
+					pre.right=cur;
+					l.add(cur.val);
+					cur=cur.left;
+				}else{
+					pre.right=null;
+					cur=cur.right;
+				}
+			}
+		}
+		return l;
+	}
+	//Iterative
+	public List<Integer> preorderTraversal2(TreeNode root) {
+		List<Integer> l = new ArrayList<Integer>();
+		if(root == null) return l;
+		Stack<TreeNode> stack=new Stack<TreeNode>();
+		stack.push(root);
+		while(!stack.isEmpty()){
+			root = stack.pop();
+			l.add(root.val);
+			if(root.right!=null) stack.push(root.right);
+			if(root.left!=null) stack.push(root.left);
+		}
+		return l;
+	}
+	
+	/**
+	 * [94. Binary Tree Inorder Traversal]
+	 * Created On 2016年7月26日  下午2:40:31
+	 */
+	//Morris
+	public List<Integer> inorderTraversal(TreeNode root) {
+		TreeNode node = root;
+		List<Integer> list = new ArrayList<Integer>();
+		while (node != null) {
+			// POINT 1
+			if (node.left == null) {
+				list.add(node.val);
+				node = node.right;
+			} else {
+				TreeNode temp = node.left;
+				while (temp.right != null && temp.right != node) temp = temp.right;
+				// POINT 2
+				if (temp.right == node) {
+					temp.right = null;
+					list.add(node.val);
+					node = node.right;
+				// POINT 3
+				} else {
+					temp.right = node;
+					node = node.left;
+				}
+			}
+		}
+		return list;
+	}
+	
+	/**
+	 * [328. Odd Even Linked List]
+	 * Created On 2016年7月26日  下午4:42:39
+	 */
+	public ListNode oddEvenList(ListNode head) {
+		if (head != null) {
+			ListNode odd = head, even = head.next, evenHead = even; 
+		
+			while (even != null && even.next != null) {
+				odd.next = odd.next.next; 
+				even.next = even.next.next; 
+				odd = odd.next;
+				even = even.next;
+			}
+			odd.next = evenHead; 
+		}
+		return head;
+	}
+	
+	/**
+	 * [230. Kth Smallest Element in a BST]
+	 * Created On 2016年7月26日  下午5:23:43
+	 */
+	//Binary Search (DFS)
+	public int kthSmallest1(TreeNode root, int k) {
+		int count = countNodes(root.left); 
+		if (k <= count) {
+			return kthSmallest1(root.left, k);
+		} else if (k > count + 1) {
+			return kthSmallest1(root.right, k - count - 1); // 1 is counted as current node
+		}
+		
+		return root.val;
+	}
+	
+	public int countNodes(TreeNode root) {
+		if (root == null) return 0;
+		return 1 + countNodes(root.left) + countNodes(root.right);
+	}
+	
+	//DFS in-order Iterative
+	public int kthSmallest2(TreeNode root, int k) {
+		Stack<TreeNode> st = new Stack<>();
+		
+		while (root != null) {
+			st.push(root);
+			root = root.left;
+		}
+			
+		while (k != 0) {
+			TreeNode n = st.pop();
+			k--;
+			if (k == 0) return n.val;
+			TreeNode right = n.right;
+			while (right != null) {
+				st.push(right);
+				right = right.left;
+			}
+		}
+		
+		return -1; // never hit if k is valid
 	}
 
 }
