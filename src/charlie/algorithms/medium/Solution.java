@@ -3,9 +3,11 @@ package charlie.algorithms.medium;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 
 /**
@@ -17,15 +19,10 @@ import java.util.Stack;
 
 public class Solution {
 
-
-	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		Solution s = new Solution();
-		int[] bits = s.countBits(5);
-		String[] ss = {"ajkgna", "akgja"};
-		String str = Arrays.toString(ss);
-		System.out.println(str);
+		System.out.println(Arrays.toString(s.countBits(5)));
 	}
 	
 	
@@ -428,7 +425,158 @@ public class Solution {
 	 */
 	public List<List<Integer>> combinationSum3(int k, int n) {
 		List<List<Integer>> list = new ArrayList<>();
+		backtrack216(list, new ArrayList<Integer>(), 1, n, k);
 		return list;
 	}
-
+	
+	public void backtrack216(List<List<Integer>> list, List<Integer> temp, int start, int target, int k){
+		if(k == 0 && target == 0){
+			list.add(new ArrayList<Integer>(temp));
+		}else{
+			for(int i = start; i <= 9 && target > 0 && k > 0; i++){
+				temp.add(i);
+				backtrack216(list, temp, i + 1, target - i, k - 1);
+				temp.remove(temp.size() - 1);
+			}
+		}
+	}
+	
+	/**
+	 * [40. Combination Sum II]
+	 * Created On 2016年7月27日  下午3:11:13
+	 */
+	
+	public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+		List<List<Integer>> list = new ArrayList<>();
+		Arrays.sort(candidates);
+		backtrack40(list, new ArrayList<Integer>(), candidates, 0, target);
+		return list;
+	}
+	
+	public void backtrack40(List<List<Integer>> list, List<Integer> temp, int[] candidates, int start, int target){
+		if(target == 0){
+			list.add(new ArrayList<Integer>(temp));
+		}else{
+			int pre = 0;
+			for(int i = start; i < candidates.length && candidates[i] <= target; i++){
+				if(i == start || (i != start && candidates[i] != pre)){
+					pre = candidates[i];
+					temp.add(candidates[i]);
+					backtrack40(list, temp, candidates, i + 1, target - candidates[i]);
+					temp.remove(temp.size() - 1);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * [39. Combination Sum]
+	 * Created On 2016年7月27日  下午2:25:29
+	 */
+	public List<List<Integer>> combinationSum(int[] candidates, int target) {
+		List<List<Integer>> list = new ArrayList<>();
+		Arrays.sort(candidates);
+		backtrack39(list, new ArrayList<Integer>(), candidates, 0, target);
+		return list;
+	}
+	
+	public void backtrack39(List<List<Integer>> list, List<Integer> temp, int[] candidates, int start, int target){
+		if(target == 0){
+			list.add(new ArrayList<Integer>(temp));
+			return;
+		}else{
+			for(int i = start; i < candidates.length && candidates[i] <= target; i++){
+				temp.add(candidates[i]);
+				backtrack39(list, temp, candidates, i, target - candidates[i]);
+				temp.remove(temp.size() - 1);
+			}
+		}
+	}
+	
+	/**
+	 * [77. Combinations]
+	 * Created On 2016年7月27日  下午3:36:59
+	 */
+	public List<List<Integer>> combine(int n, int k) {
+		List<List<Integer>> list = new ArrayList<>();
+		backtrack77(list, new ArrayList<Integer>(), 1, n, k);
+		return list;
+	}
+	
+	public void backtrack77(List<List<Integer>> list, List<Integer> temp,int start, int limit, int k){
+		if(k == 0){
+			list.add(new ArrayList<Integer>(temp));
+		}else{
+			
+			for(int i = start; i <= limit - k + 1; i++){
+				temp.add(i);
+				backtrack77(list, temp, i + 1, limit, k - 1);
+				temp.remove(temp.size() - 1);
+			}
+		}
+	}
+	
+	/**
+	 * [17. Letter Combinations of a Phone Number]
+	 * Created On 2016年7月27日  下午4:27:17
+	 */
+	public static char[] letterBegin = {'\u0000','\u0000','a', 'd', 'g', 'j', 'm', 'p', 't', 'w'};
+	public static int[] letterNums = {0, 0, 3, 3, 3, 3, 3, 4, 3, 4};
+	public List<String> letterCombinations(String digits) {
+		List<String> list = new ArrayList<>();
+		if(digits == null || digits.length() == 0) return list;
+		int[] digit = new int[digits.length()];
+		for(int i = 0; i < digits.length(); i++){
+			digit[i] = digits.charAt(i) - '0';
+		}
+		backtrack17(list, new StringBuilder(), digit, 0, digit.length);
+		return list;
+	}
+	
+	public void backtrack17(List<String> list, StringBuilder sb, int[] digit,int index, int len){
+		if(len == 0){
+			list.add(new String(sb));
+		}else{
+			int num = letterNums[digit[index]];
+			if(num != 0){
+				char begin = letterBegin[digit[index]];
+				for(int i = 0; i < num; i++){
+					sb.append((char)(begin + i));
+					backtrack17(list, sb, digit, index + 1, len - 1);
+					sb.deleteCharAt(sb.length() - 1);
+				}
+			}else{
+				backtrack17(list, sb, digit, index + 1, len - 1);
+			}
+		}
+	}
+	
+	/**
+	 * [22. Generate Parentheses]
+	 * Created On 2016年7月27日  下午5:30:14
+	 */
+	public List<String> generateParenthesis(int n) {
+		List<String> list = new LinkedList<>();
+		if(n <= 0) return list;
+		backtrace22(list, new StringBuilder(), 0, 0, n);
+		return list;
+	}
+	
+	public void backtrace22(List<String> list, StringBuilder sb, int left, int right, int n){
+		if(left == n && right == n){
+			list.add(sb.toString());
+		}else{
+			int len = sb.length();
+			if(left < n){
+				sb.append('(');
+				backtrace22(list, sb, left + 1, right, n);
+				sb.setLength(len);
+			}
+			if(left > right){
+				sb.append(')');
+				backtrace22(list, sb, left, right + 1, n);
+				sb.setLength(len);
+			}
+		}
+	}
 }

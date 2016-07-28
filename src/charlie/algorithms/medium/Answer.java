@@ -2,7 +2,9 @@ package charlie.algorithms.medium;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Stack;
@@ -331,5 +333,74 @@ public class Answer {
 		
 		return -1; // never hit if k is valid
 	}
+	
+	
+	/**
+	 * [40. Combination Sum II]
+	 * Created On 2016年7月27日  下午3:32:37
+	 */
+	public List<List<Integer>> combinationSum2(int[] nums, int target) {
+		List<List<Integer>> list = new ArrayList<>();
+		Arrays.sort(nums);
+		backtrack40(list, new ArrayList<>(), nums, target, 0);
+		return list;
+		
+	}
 
+	private void backtrack40(List<List<Integer>> list, List<Integer> tempList, int [] nums, int remain, int start){
+		if(remain < 0) return;
+		else if(remain == 0) list.add(new ArrayList<>(tempList));
+		else{
+			for(int i = start; i < nums.length; i++){
+				if(i > start && nums[i] == nums[i-1]) continue; // skip duplicates
+				tempList.add(nums[i]);
+				backtrack40(list, tempList, nums, remain - nums[i], i + 1);
+				tempList.remove(tempList.size() - 1); 
+			}
+		}
+	}
+	
+	/**
+	 * [77. Combinations]
+	 * Created On 2016年7月27日  下午3:36:59
+	 */
+	//Iterative
+	public List<List<Integer>> combine(int n, int k) {
+		if (n == 0 || k == 0 || k > n) return Collections.emptyList();
+		List<List<Integer>> res = new ArrayList<List<Integer>>();
+		for (int i = 1; i <= n + 1 - k; i++) res.add(Arrays.asList(i));
+		for (int i = 2; i <= k; i++) {
+			List<List<Integer>> tmp = new ArrayList<List<Integer>>();
+			for (List<Integer> list : res) {
+				for (int m = list.get(list.size() - 1) + 1; m <= n - (k - i); m++) {
+					List<Integer> newList = new ArrayList<Integer>(list);
+					newList.add(m);
+					tmp.add(newList);
+				}
+			}
+			res = tmp;
+		}
+		return res;
+	}
+	
+	/**
+	 * [17. Letter Combinations of a Phone Number]
+	 * Created On 2016年7月27日  下午4:27:17
+	 */
+	public List<String> letterCombinations(String digits) {
+		LinkedList<String> ans = new LinkedList<String>();
+		if(digits.length() == 0) return ans;
+		
+		String[] mapping = new String[] {"0", "1", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+		ans.add("");
+		for(int i =0; i<digits.length();i++){
+			int x = Character.getNumericValue(digits.charAt(i));
+			while(ans.peek().length()==i){
+				String t = ans.remove();
+				for(char s : mapping[x].toCharArray())
+					ans.add(t+s);
+			}
+		}
+		return ans;
+	}
 }
