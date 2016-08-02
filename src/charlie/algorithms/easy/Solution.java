@@ -547,14 +547,14 @@ public class Solution {
 	 * Created On 2016年7月11日  下午8:38:35
 	 */
 	public int rob(int[] nums) {
-		int rob = 0; // rob current house
-		int norob = 0; // not rob this house
-		for(int i = 0; i < nums.length; i++){
-			int tmp = norob;
-			norob = norob > rob ? norob : rob;
-			rob = tmp + nums[i];
+		int rob = 0; //max monney can get if rob current house
+		int notrob = 0; //max money can get if not rob current house
+		for(int i=0; i<nums.length; i++) {
+			int currob = notrob + nums[i]; //if rob current value, previous house must not be robbed
+			notrob = Math.max(notrob, rob); //if not rob ith house, take the max value of robbed (i-1)th house and not rob (i-1)th house
+			rob = currob;
 		}
-		return norob > rob ? norob : rob;
+		return Math.max(rob, notrob);
 	}
 	
 	
@@ -1144,7 +1144,5 @@ public class Solution {
 			return ++num;
 		}
 	}
-	
-
 }
 
