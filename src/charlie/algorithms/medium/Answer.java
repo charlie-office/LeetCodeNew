@@ -403,4 +403,130 @@ public class Answer {
 		}
 		return ans;
 	}
+	
+	/**
+	 * [337. House Robber III]
+	 * Created On 2016年7月28日 下午4:31:58
+	 */
+	public int rob(TreeNode root) {
+		int[] res = robSub(root);
+		return Math.max(res[0], res[1]);
+	}
+
+	private int[] robSub(TreeNode root) {
+		if (root == null) {
+			return new int[2];
+		}
+		
+		int[] left = robSub(root.left);
+		int[] right = robSub(root.right);
+		
+		int[] res = new int[2];
+		res[0] = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);// not rob current
+		res[1] = root.val + left[0] + right[0]; //rob current
+		
+		return res;
+	}
+	
+	/**
+	 * [96. Unique Binary Search Trees]
+	 * Dynamic Programming
+	 * The Recursive Formula: G(n) = G(0) * G(n-1) + G(1) * G(n-2) + ... + G(n-1) * G(0) 
+	 * Created On 2016年7月28日 下午6:10:03
+	 */
+	public int numTrees(int n) {
+		int [] G = new int[n+1];
+		G[0] = G[1] = 1;
+		
+		for(int i=2; i<=n; ++i) {
+			for(int j=1; j<=i; ++j) {
+				G[i] += G[j-1] * G[i-j];
+			}
+		}
+
+		return G[n];
+	}
+	
+	/**
+	 * [241. Different Ways to Add Parentheses]
+	 * Created On 2016年7月29日 下午1:02:55
+	 */
+	public List<Integer> diffWaysToCompute(String input) {
+		List<Integer> ret = new LinkedList<Integer>();
+		for (int i=0; i<input.length(); i++) {
+			if (input.charAt(i) == '-' ||
+				input.charAt(i) == '*' ||
+				input.charAt(i) == '+' ) {
+				String part1 = input.substring(0, i);
+				String part2 = input.substring(i+1);
+				List<Integer> part1Ret = diffWaysToCompute(part1);
+				List<Integer> part2Ret = diffWaysToCompute(part2);
+				for (Integer p1 :   part1Ret) {
+					for (Integer p2 :   part2Ret) {
+						int c = 0;
+						switch (input.charAt(i)) {
+							case '+': c = p1+p2;
+								break;
+							case '-': c = p1-p2;
+								break;
+							case '*': c = p1*p2;
+								break;
+						}
+						ret.add(c);
+					}
+				}
+			}
+		}
+		if (ret.size() == 0) {
+			ret.add(Integer.valueOf(input));
+		}
+		return ret;
+	}
+	
+	/**
+	 * [46. Permutations]
+	 * Created On 2016年7月30日 下午4:23:57
+	 */
+	public List<List<Integer>> permute(int[] num) {
+		LinkedList<List<Integer>> res = new LinkedList<List<Integer>>();
+		res.add(new ArrayList<Integer>());
+		for (int n : num) {
+			for (int size = res.size(); size > 0; size--) {
+				List<Integer> r = res.pollFirst();
+				for (int i = 0; i <= r.size(); i++) {
+					List<Integer> t = new ArrayList<Integer>(r);
+					t.add(i, n);
+					res.add(t);
+				}
+			}
+		}
+		return res;
+	}
+	
+	/**
+	 * [63. Unique Paths II]
+	 * Created On 2016年7月31日 下午6:10:34
+	 */
+	public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+		int m = obstacleGrid.length, n = obstacleGrid[0].length;
+		
+		//flip upper left cell (the start cell): 1 => 0 or 0 => 1
+		obstacleGrid[0][0] ^= 1;
+		
+		//first row: if 1, then 0; otherwise, left cell
+		for(int i = 1; i < n; i++)
+			obstacleGrid[0][i] = obstacleGrid[0][i] == 1 ? 0 : obstacleGrid[0][i - 1];
+		
+		//first column: if 1, then 0; otherwise, top cell
+		for(int i = 1; i < m; i++)
+			obstacleGrid[i][0] = obstacleGrid[i][0] == 1 ? 0 : obstacleGrid[i - 1][0];
+			
+		//rest: if 1, then 0; otherwise, left cell + top cell
+		for(int i = 1; i < m; i++)
+			for(int j = 1; j < n; j++)
+				obstacleGrid[i][j] = obstacleGrid[i][j] == 1 ? 0 : obstacleGrid[i - 1][j] + obstacleGrid[i][j - 1];
+				
+		//return lower right cell (the end cell)
+		return obstacleGrid[m - 1][n - 1];
+	}
 }
