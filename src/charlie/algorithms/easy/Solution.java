@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * 
@@ -547,14 +549,14 @@ public class Solution {
 	 * Created On 2016年7月11日  下午8:38:35
 	 */
 	public int rob(int[] nums) {
-		int rob = 0; //max monney can get if rob current house
-		int notrob = 0; //max money can get if not rob current house
-		for(int i=0; i<nums.length; i++) {
-			int currob = notrob + nums[i]; //if rob current value, previous house must not be robbed
-			notrob = Math.max(notrob, rob); //if not rob ith house, take the max value of robbed (i-1)th house and not rob (i-1)th house
-			rob = currob;
+		int rob = 0; // rob current house
+		int norob = 0; // not rob this house
+		for(int i = 0; i < nums.length; i++){
+			int tmp = norob;
+			norob = norob > rob ? norob : rob;
+			rob = tmp + nums[i];
 		}
-		return Math.max(rob, notrob);
+		return norob > rob ? norob : rob;
 	}
 	
 	
@@ -1143,6 +1145,53 @@ public class Solution {
 			}
 			return ++num;
 		}
+	}
+	
+	/**
+	 * [No. Name]
+	 * Created On 2016年8月15日 下午2:57:55
+	 */
+	public List<List<Integer>> levelOrder(TreeNode root){
+		List<List<Integer>> res = new ArrayList<List<Integer>>();
+		if(root == null) return res;
+		Queue<TreeNode> queue = new LinkedList<>();
+		queue.offer(root);
+		while(!queue.isEmpty()){
+			int size = queue.size();
+			List<Integer> list = new ArrayList<>(size);
+			for(int i = 0; i < size; i++){
+				TreeNode node = queue.poll();
+				list.add(node.val);
+				if(node.left != null) queue.offer(node.left);
+				if(node.right != null) queue.offer(node.right);
+			}
+			res.add(list);
+		}
+		return res;
+	}
+	
+	/**
+	 * [107. Binary Tree Level Order Traversal II]
+	 * Created On 2016年8月15日 下午3:13:41
+	 */
+	public List<List<Integer>> levelOrderBottom(TreeNode root) {
+		LinkedList<List<Integer>> res = new LinkedList<List<Integer>>();
+		if(root == null) return res;
+		List<TreeNode> list = new ArrayList<>();
+		list.add(root);
+		while(!list.isEmpty()){
+			int size = list.size();
+			List<Integer> item = new ArrayList<>(size);
+			List<TreeNode> newList = new ArrayList<>();
+ 			for(TreeNode node : list){
+ 				item.add(node.val);
+ 				if(node.left != null) newList.add(node.left);
+ 				if(node.right != null) newList.add(node.right);
+ 			}
+ 			res.addFirst(item);
+			list = newList;
+		}
+		return res;
 	}
 }
 
