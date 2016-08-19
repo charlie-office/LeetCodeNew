@@ -1,6 +1,3 @@
-/* Solved Problems
- * [. ]
- */
 package charlie.algorithms.hard;
 
 /**
