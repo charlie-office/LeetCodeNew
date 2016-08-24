@@ -23,7 +23,7 @@ public class Solution {
         // TODO Auto-generated method stub
         Solution s = new Solution();
         int[] nums = {0,1,0,2,1,0,1,3,2,1,2,1};
-        System.out.print(s.trap(nums));
+        System.out.print(s.longestPalindrome_DP("leve"));
     }
 
     /**
@@ -1520,6 +1520,54 @@ public class Solution {
         return sumNumbersDFS(root.left, sum) + sumNumbersDFS(root.right, sum);
     }
 
+    /**
+     * [3. Longest Substring Without Repeating Characters]
+     * Created On 2016-08-24 17:04:13
+     */
+    //Hash
+    public int lengthOfLongestSubstring(String s) {
+        if(s == null || s.length() == 0) return 0;
+        int[] mark = new int[256];
+        Arrays.fill(mark, -1);
+        int len = s.length();
+        int res = 0, left = 0;
+        for(int right = 0; right < len; right ++){
+            char tmp = s.charAt(right);
+            if(mark[tmp] > -1){
+                left = left > mark[tmp] + 1? left : mark[tmp] + 1;
+            }
+            mark[tmp] = right;
+            res = res > (right - left + 1) ? res: right - left + 1;
+        }
+        return res;
+    }
 
-
+    /**
+     * [5. Longest Palindromic Substring]
+     * Created On 2016-08-24 19:33:10
+     */
+    //Danamic Programming
+    public String longestPalindrome_DP(String s) {
+        if(s == null || s.length() == 0) return "";
+        int len = s.length();
+        int plen = 0;
+        boolean[][] dp = new boolean[len][len];
+        int left = 0, right = 0;
+        for (int i = 0; i < len; i++) {
+            for (int j = 0; j < i; j++) {
+                dp[j][i] = (s.charAt(i) == s.charAt(j) && ((i - j) < 2 || dp[j + 1][i - 1]));
+                if(dp[j][i] && plen < i - j + 1){
+                    plen = i - j + 1;
+                    left = j;
+                    right = i;
+                }
+            }
+            dp[i][i] = true;
+        }
+        return s.substring(left, right + 1);
+    }
+    //Manacher¡®s Algorithm
+    public String longestPalindrome(String s) {
+        return "";
+    }
 }
